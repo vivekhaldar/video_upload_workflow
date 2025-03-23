@@ -1,0 +1,19 @@
+[project]
+name = "video-upload-workflow"
+version = "0.1.0"
+description = "Edit, transcribe, describe and upload videos."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.6",
+]
+
+[tool.uv]
+package = true
+
+[project.scripts]
+video_upload_workflow = "video_upload_workflow:main"
