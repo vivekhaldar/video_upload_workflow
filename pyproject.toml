@@ -5,6 +5,10 @@ description = "Edit, transcribe, describe and upload videos."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "color_edit",
+    "yt_chapter_maker",
+    "yt_upload",
+    "openai-whisper",
 ]
 
 [dependency-groups]
@@ -14,6 +18,11 @@ dev = [
 
 [tool.uv]
 package = true
+
+[tool.uv.sources]
+color_edit = { git = "https://github.com/vivekhaldar/color_edit" }
+yt_chapter_maker = { git = "https://github.com/vivekhaldar/yt_chapter_maker" }
+yt_upload = { git = "https://github.com/vivekhaldar/yt_upload" }
 
 [project.scripts]
 video_upload_workflow = "video_upload_workflow:main"

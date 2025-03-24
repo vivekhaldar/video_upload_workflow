@@ -53,8 +53,6 @@ def color_edit_video(input_video: str, output_video: Path):
         print(f"{output_video} already exists, skipping color-edit step.")
     else:
         cmd = [
-            "uvx",
-            "--from", "git+https://github.com/vivekhaldar/color_edit",
             "color_edit",
             "--input", input_video,
             "--output", str(output_video),
@@ -71,8 +69,6 @@ def transcribe_video(input_video: Path, output_srt: Path):
         print(f"{output_srt} already exists, skipping transcription step.")
     else:
         cmd = [
-            "uvx",
-            "--from", "openai-whisper",
             "whisper",
             "--output_format", "srt",
             "--task", "transcribe",
@@ -89,8 +85,6 @@ def generate_chapters(input_srt: Path, output_json: Path):
         print(f"{output_json} already exists, skipping chapters generation step.")
     else:
         cmd = [
-            "uvx",
-            "--from", "git+https://github.com/vivekhaldar/yt_chapter_maker",
             "yt_chapter_maker",
             "--input", str(input_srt),
             "--output", str(output_json)
@@ -203,8 +197,6 @@ def upload_video(final_title):
     """Upload the video using the provided title and associated files."""
     print("=== Step 8: Uploading video to YouTube ===")
     cmd = [
-        "uvx",
-        "--from", "git+https://github.com/vivekhaldar/yt_upload",
         "yt_upload",
         "--video", "output.mp4",
         "--transcript", "output.srt",
