@@ -20,51 +20,23 @@ Before running the script, make sure you have the following installed:
   - [color_edit](https://github.com/vivekhaldar/color_edit)
   - [yt_chapter_maker](https://github.com/vivekhaldar/yt_chapter_maker)
   - [yt_upload](https://github.com/vivekhaldar/yt_upload)
-- **fzf** – for fuzzy title selection ([fzf GitHub repository](https://github.com/junegunn/fzf))
-- **jq** – for JSON processing (although JSON parsing is handled via Python)
 
 Also, ensure your `$EDITOR` environment variable is set to your preferred text editor (defaults to `nano` if not set).
 
-## Installation
-
-1. **Clone the Repository:**
-
-   ```bash
-   git clone https://github.com/your_username/your_repo.git
-   cd your_repo
-   ```
-
-2. **(Optional) Set Up a Virtual Environment:**
-
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   ```
-
-   *Note: If you add any Python dependencies, list them in `requirements.txt`.*
 
 ## Usage
 
 The script is intended to be run from the command line. Its basic syntax is:
 
 ```bash
-./video_pipeline.py [--yes|-y] input_video.mp4
+uvx --from git+https://github.com/vivekhaldar/video_upload_workflow video_upload_workflow input_video.mp4
 ```
 
-### Examples
+For the step that uploads to YouTube, the following credentials are expected in the current directory:
+- `client_secrets.json` for using the YouTube upload API
+- `token.pickle` as the saved credential for your specific YouTube channel
 
-- **Run with Confirmation Prompt:**
-
-  ```bash
-  ./video_pipeline.py my_video.mp4
-  ```
-
-- **Run and Skip Confirmation (auto-upload):**
-
-  ```bash
-  ./video_pipeline.py --yes my_video.mp4
-  ```
+The tool also expects `thumbnail.png` in the current directory.
 
 ## Workflow Details
 
@@ -81,7 +53,7 @@ The script is intended to be run from the command line. Its basic syntax is:
    Extracts and displays chapter markers and suggested titles from the JSON file.
 
 5. **Title Selection:**  
-   Uses `fzf` to let you choose a title from the suggestions, with an option to edit.
+   Choose a title from the suggestions, with an option to edit.
 
 6. **Description Editing:**  
    Creates `description.txt` with chapter markers and opens it in your editor for further customization.
@@ -92,14 +64,3 @@ The script is intended to be run from the command line. Its basic syntax is:
 8. **Upload:**  
    Uploads the video to YouTube along with the transcript, description, and thumbnail.
 
-## Contributing
-
-Contributions are welcome! Feel free to open issues or submit pull requests to improve the script.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-Feel free to modify the content to suit your needs or add further details about your project.
