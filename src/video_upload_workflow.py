@@ -10,8 +10,7 @@ This script processes a video through several steps:
   7. Asks for confirmation (unless --yes is provided).
   8. Uploads the video to YouTube.
 
-It requires the commands: uvx and jq (although jq is not used because JSON
-is processed with Python's json module). Make sure these are installed.
+It requires the commands: uvx. Make sure these are installed.
 """
 
 import argparse
@@ -24,7 +23,7 @@ from pathlib import Path
 
 def check_required_commands():
     """Check that all required external commands are available."""
-    required_cmds = ["jq", "uvx"]
+    required_cmds = ["uvx"]
     for cmd in required_cmds:
         if shutil.which(cmd) is None:
             print(f"Error: {cmd} is not installed. Please install it and try again.", file=sys.stderr)
