@@ -10,7 +10,7 @@ This script processes a video through several steps:
   7. Asks for confirmation (unless --yes is provided).
   8. Uploads the video to YouTube.
 
-It requires the commands: uvx, fzf, and jq (although jq is not used because JSON
+It requires the commands: uvx and jq (although jq is not used because JSON
 is processed with Python's json module). Make sure these are installed.
 """
 
@@ -24,7 +24,7 @@ from pathlib import Path
 
 def check_required_commands():
     """Check that all required external commands are available."""
-    required_cmds = ["fzf", "jq", "uvx"]
+    required_cmds = ["jq", "uvx"]
     for cmd in required_cmds:
         if shutil.which(cmd) is None:
             print(f"Error: {cmd} is not installed. Please install it and try again.", file=sys.stderr)
@@ -114,7 +114,7 @@ def extract_chapters_and_titles(json_file: Path):
 
 def select_and_edit_title(titles):
     """
-    Let the user choose a title using fzf and optionally edit it.
+    Let the user choose a title from the suggested list and optionally edit it.
     
     Args:
         titles (list): A list of suggested titles.
@@ -123,21 +123,33 @@ def select_and_edit_title(titles):
         str: The final title to use.
     """
     print("=== Step 5: Choose and edit a title ===")
-    # Use fzf to select a title.
-    try:
-        fzf_proc = subprocess.run(
-            ["fzf", "--prompt=Pick a title: "],
-            input="\n".join(titles).encode("utf-8"),
-            stdout=subprocess.PIPE,
-            check=True,
-        )
-    except subprocess.CalledProcessError:
-        print("No title selected. Exiting.")
-        sys.exit(1)
     
-    selected_title = fzf_proc.stdout.decode("utf-8").strip()
+    # Print all suggested titles with numbers
+    print("Suggested titles:")
+    for i, title in enumerate(titles, 1):
+        print(f"{i}. {title}")
+    print()
+    
+    # Let user select a title by number
+    while True:
+        try:
+            selection = input("Enter the number of your preferred title (or 0 to enter a custom title): ")
+            selection = int(selection.strip())
+            
+            if selection == 0:
+                selected_title = input("Enter your custom title: ").strip()
+                break
+            elif 1 <= selection <= len(titles):
+                selected_title = titles[selection - 1]
+                break
+            else:
+                print(f"Please enter a number between 1 and {len(titles)}, or 0 for custom title.")
+        except ValueError:
+            print("Please enter a valid number.")
+    
     print(f"Selected title: {selected_title}")
     
+    # Let user edit the selected title if desired
     input_title = input("Edit title (press Enter to keep the above): ").strip()
     final_title = input_title if input_title else selected_title
     print(f"Final title: {final_title}")
