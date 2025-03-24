@@ -36,6 +36,8 @@ For the step that uploads to YouTube, the following credentials are expected in 
 - `client_secrets.json` for using the YouTube upload API
 - `token.pickle` as the saved credential for your specific YouTube channel
 
+For chapter extraction, you will need to populate an OpenAI API key in the environment variable `OPENAI_API_KEY`.
+
 The tool also expects `thumbnail.png` in the current directory.
 
 ## Workflow Details
