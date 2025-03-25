@@ -21,9 +21,9 @@ dev = [
 package = true
 
 [tool.uv.sources]
-color_edit = { git = "https://github.com/vivekhaldar/color_edit" }
-yt_chapter_maker = { git = "https://github.com/vivekhaldar/yt_chapter_maker" }
-yt_upload = { git = "https://github.com/vivekhaldar/yt_upload" }
+color_edit = { git = "ssh://git@github.com/vivekhaldar/color_edit" }
+yt_chapter_maker = { git = "ssh://git@github.com/vivekhaldar/yt_chapter_maker" }
+yt_upload = { git = "ssh://git@github.com/vivekhaldar/yt_upload" }
 
 [project.scripts]
 video_upload_workflow = "video_upload_workflow:main"

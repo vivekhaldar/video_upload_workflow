@@ -97,7 +97,7 @@ wheels = [
 [[package]]
 name = "color-edit"
 version = "0.1.0"
-source = { git = "https://github.com/vivekhaldar/color_edit#18b70061158fdce8ad3704107a6289798b680cff" }
+source = { git = "ssh://git@github.com/vivekhaldar/color_edit#18b70061158fdce8ad3704107a6289798b680cff" }
 dependencies = [
     { name = "moviepy" },
     { name = "openai-whisper" },
@@ -1080,11 +1080,11 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "color-edit", git = "https://github.com/vivekhaldar/color_edit" },
+    { name = "color-edit", git = "ssh://git@github.com/vivekhaldar/color_edit" },
     { name = "flask" },
     { name = "openai-whisper" },
-    { name = "yt-chapter-maker", git = "https://github.com/vivekhaldar/yt_chapter_maker" },
-    { name = "yt-upload", git = "https://github.com/vivekhaldar/yt_upload" },
+    { name = "yt-chapter-maker", git = "ssh://git@github.com/vivekhaldar/yt_chapter_maker" },
+    { name = "yt-upload", git = "ssh://git@github.com/vivekhaldar/yt_upload" },
 ]
 
 [package.metadata.requires-dev]
@@ -1105,7 +1105,7 @@ wheels = [
 [[package]]
 name = "yt-chapter-maker"
 version = "0.1.0"
-source = { git = "https://github.com/vivekhaldar/yt_chapter_maker#5fa958ce805b04136b95fba581e90cbc63fef5bd" }
+source = { git = "ssh://git@github.com/vivekhaldar/yt_chapter_maker#5fa958ce805b04136b95fba581e90cbc63fef5bd" }
 dependencies = [
     { name = "requests" },
 ]
@@ -1113,7 +1113,7 @@ dependencies = [
 [[package]]
 name = "yt-upload"
 version = "0.1.0"
-source = { git = "https://github.com/vivekhaldar/yt_upload#2d28dfcbc25478cf4920693afd2aa98e8d7eda1b" }
+source = { git = "ssh://git@github.com/vivekhaldar/yt_upload#2d28dfcbc25478cf4920693afd2aa98e8d7eda1b" }
 dependencies = [
     { name = "google-api-python-client" },
     { name = "google-auth" },
