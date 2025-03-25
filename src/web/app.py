@@ -267,4 +267,4 @@ def get_process_status(session_id):
     return jsonify(status)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
