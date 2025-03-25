@@ -9,6 +9,7 @@ dependencies = [
     "yt_chapter_maker",
     "yt_upload",
     "openai-whisper",
+    "flask",
 ]
 
 [dependency-groups]
