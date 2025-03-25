@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Select Video Title{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Select Video Title</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="mb-3">Suggested Titles</h4>
+                
+                <form action="{{ url_for('select_title') }}" method="post">
+                    <div class="list-group mb-4">
+                        {% for title in titles %}
+                        <label class="list-group-item">
+                            <input class="form-check-input me-2" type="radio" name="title_radio" value="{{ title }}">
+                            {{ title }}
+                        </label>
+                        {% endfor %}
+                        <label class="list-group-item">
+                            <input class="form-check-input me-2" type="radio" id="custom-title-radio" name="title_radio" value="custom">
+                            Custom title (enter below)
+                        </label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Custom or Edit Title</label>
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Enter or edit title here">
+                        <div class="form-text">You can enter a custom title or edit a selected one</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">Continue to Description</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const titleRadios = document.querySelectorAll('input[name="title_radio"]');
+    const customTitleRadio = document.getElementById('custom-title-radio');
+    const titleInput = document.getElementById('title');
+    
+    // When a radio button is clicked, update the title input
+    titleRadios.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            if (this.value !== 'custom') {
+                titleInput.value = this.value;
+            } else {
+                titleInput.value = '';
+                titleInput.focus();
+            }
+        });
+    });
+    
+    // When the title input is clicked, select the custom radio
+    titleInput.addEventListener('focus', function() {
+        customTitleRadio.checked = true;
+    });
+    
+    // Form submission, ensure we use the title input value
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Make sure we always use the value from the input field
+        if (customTitleRadio.checked && titleInput.value === '') {
+            alert('Please enter a custom title.');
+            titleInput.focus();
+        } else {
+            this.submit();
+        }
+    });
+});
+</script>
+{% endblock %}

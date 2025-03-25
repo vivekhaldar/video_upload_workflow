@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Video Upload Workflow - Home{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Video Upload Workflow</h3>
+            </div>
+            <div class="card-body">
+                <p>This tool helps you process and upload videos to YouTube with the following steps:</p>
+                <ol>
+                    <li><strong>Color Edit:</strong> Applies a color editing filter to your video</li>
+                    <li><strong>Transcription:</strong> Transcribes the video using OpenAI's Whisper</li>
+                    <li><strong>Chapter Generation:</strong> Generates chapters and suggested titles</li>
+                    <li><strong>Title Selection:</strong> Lets you choose a title from suggestions or create your own</li>
+                    <li><strong>Description Editing:</strong> Allows you to edit the description with chapter markers</li>
+                    <li><strong>Final Review:</strong> Preview everything before upload</li>
+                    <li><strong>Upload:</strong> Uploads the video to YouTube with all metadata</li>
+                </ol>
+
+                <h4 class="mt-4">Upload Your Video</h4>
+                <form action="{{ url_for('upload_video') }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="video_file" class="form-label">Video File <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="video_file" name="video_file" required accept="video/mp4,video/x-m4v,video/*">
+                        <div class="form-text">Supported formats: MP4, MOV, AVI, MKV</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="openai_api_key" class="form-label">OpenAI API Key <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="openai_api_key" name="openai_api_key" required>
+                        <div class="form-text">Required for transcription and chapter generation</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="client_secrets" class="form-label">YouTube Client Secrets JSON <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="client_secrets" name="client_secrets">
+                        <div class="form-text">client_secrets.json file for YouTube API</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="token_pickle" class="form-label">YouTube Token Pickle</label>
+                        <input type="file" class="form-control" id="token_pickle" name="token_pickle">
+                        <div class="form-text">token.pickle file for your YouTube channel (if you already have one)</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="thumbnail" class="form-label">Video Thumbnail (PNG)</label>
+                        <input type="file" class="form-control" id="thumbnail" name="thumbnail" accept="image/png">
+                        <div class="form-text">Optional thumbnail for your video</div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Upload & Process</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

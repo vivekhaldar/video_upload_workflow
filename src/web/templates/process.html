@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Processing Video{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Process Video</h3>
+            </div>
+            <div class="card-body text-center">
+                <h4 class="mb-4">Your video has been uploaded successfully!</h4>
+
+                <div id="processing-info">
+                    <p>Click the button below to begin processing your video. This may take some time depending on the length of your video.</p>
+                    <p>The following steps will be performed:</p>
+                    <ol class="text-start">
+                        <li>Color editing of the video</li>
+                        <li>Transcription (using OpenAI Whisper)</li>
+                        <li>Generation of chapters and suggested titles</li>
+                    </ol>
+                    
+                    <form action="{{ url_for('process_video') }}" method="post">
+                        <button type="submit" id="start-processing" class="btn btn-primary btn-lg">
+                            Start Processing
+                        </button>
+                    </form>
+                </div>
+                
+                <div id="processing-status" class="d-none">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5>Processing Your Video...</h5>
+                    <p class="text-muted">This may take several minutes. Please do not close this window.</p>
+                    
+                    <div class="progress mb-3">
+                        <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    
+                    <ul class="list-group text-start mb-4">
+                        <li id="step-color-edit" class="list-group-item">
+                            <span class="status-icon">⏳</span> Color Editing
+                        </li>
+                        <li id="step-transcription" class="list-group-item">
+                            <span class="status-icon">⏳</span> Transcription
+                        </li>
+                        <li id="step-chapters" class="list-group-item">
+                            <span class="status-icon">⏳</span> Generating Chapters & Titles
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const startButton = document.getElementById('start-processing');
+    const processingInfo = document.getElementById('processing-info');
+    const processingStatus = document.getElementById('processing-status');
+    const progressBar = document.getElementById('progress-bar');
+    const stepColorEdit = document.getElementById('step-color-edit');
+    const stepTranscription = document.getElementById('step-transcription');
+    const stepChapters = document.getElementById('step-chapters');
+    
+    if (startButton) {
+        startButton.addEventListener('click', function() {
+            // Show the processing status
+            processingInfo.classList.add('d-none');
+            processingStatus.classList.remove('d-none');
+            
+            // The form will be submitted and the page will be redirected when processing is complete
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,77 @@
+/* Custom styles for Video Upload Workflow */
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+    padding: 15px 20px;
+}
+
+.footer {
+    margin-top: 50px;
+    padding: 20px 0;
+    color: #6c757d;
+}
+
+/* Processing page styles */
+.status-icon {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+#step-color-edit.active .status-icon,
+#step-transcription.active .status-icon,
+#step-chapters.active .status-icon {
+    color: #0d6efd;
+}
+
+#step-color-edit.done .status-icon,
+#step-transcription.done .status-icon,
+#step-chapters.done .status-icon {
+    color: #198754;
+}
+
+/* Form elements */
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+textarea.form-control {
+    min-height: 250px;
+    font-family: monospace;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Download page */
+.bi-check-circle-fill {
+    color: #198754;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .row [class^="col-"] {
+        margin-bottom: 15px;
+    }
+}

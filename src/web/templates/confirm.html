@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Review and Confirm Upload{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Review and Confirm Upload</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="mb-4">Review Your Video Details</h4>
+                <p>Please review your video details before uploading to YouTube.</p>
+                
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0">Video Title</h5>
+                    </div>
+                    <div class="card-body">
+                        <p id="video-title">{{ title }}</p>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Video Description with Chapters</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre id="video-description" class="bg-light p-3">{{ description }}</pre>
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning mb-4">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong>Upload Note:</strong> This will upload your processed video to YouTube using the provided credentials. Make sure everything looks correct before proceeding.
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="{{ url_for('edit_description') }}" class="btn btn-secondary w-100">
+                            <i class="bi bi-arrow-left"></i> Back to Edit Description
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <form action="{{ url_for('confirm_upload') }}" method="post">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-cloud-upload"></i> Upload to YouTube
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
