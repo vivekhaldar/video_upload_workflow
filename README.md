@@ -1,4 +1,3 @@
-
 # Video Processing Pipeline
 
 This repository contains a Python script that automates a video processing pipeline. The script performs the following tasks:
@@ -39,6 +38,38 @@ For the step that uploads to YouTube, the following credentials are expected in 
 For chapter extraction, you will need to populate an OpenAI API key in the environment variable `OPENAI_API_KEY`.
 
 The tool also expects `thumbnail.png` in the current directory.
+
+## Web Application
+
+This repository also includes a web-based interface that provides the same functionality in a user-friendly format. The web application guides you through the same workflow but with a graphical interface.
+
+### Running the Web Application
+
+1. **Start the web server:**
+   ```bash
+   # From the root directory of the project
+   python -m src.web.app
+   ```
+   
+   Or alternatively:
+   ```bash
+   cd src
+   flask --app web.app run
+   ```
+
+2. **Access the web interface:**
+   Open your browser and navigate to [http://127.0.0.1:5000](http://127.0.0.1:5000)
+
+### Web Interface Features
+
+- **Upload Form**: Upload your video file and provide your OpenAI API key, YouTube credentials, and optional thumbnail
+- **Processing Dashboard**: Monitor the progress of video processing in real-time
+- **Interactive Title Selection**: Choose from AI-generated title suggestions or create your own
+- **Description Editor**: Edit the video description with chapter markers in a user-friendly text editor
+- **Review Page**: Preview all details before uploading to YouTube
+- **Download Page**: Download all processed files (color-edited video, transcript, chapters, etc.)
+
+All files are stored in session-specific folders and can be downloaded after processing is complete.
 
 ## Workflow Details
 
