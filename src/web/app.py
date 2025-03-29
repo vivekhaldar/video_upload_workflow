@@ -91,6 +91,9 @@ def process_video():
         return redirect(url_for('index'))
     
     if request.method == 'POST':
+        # Check if the user wants to skip color editing
+        skip_color_edit = 'skip_color_edit' in request.form
+        
         # Start processing the video
         input_video = str(session_folder / 'input_video.mp4')
         
@@ -99,9 +102,16 @@ def process_video():
         os.chdir(str(session_folder))
         
         try:
-            # Step 1: Color edit the video
+            # Step 1: Color edit the video (unless skipped)
             output_video = Path("output.mp4")
-            video_upload_workflow.color_edit_video(input_video, output_video)
+            if skip_color_edit:
+                print("Color editing step skipped. Using input video for subsequent steps.")
+                output_video = Path(input_video)
+                # Save info that color editing was skipped
+                with open('color_edit_skipped.txt', 'w') as f:
+                    f.write('true')
+            else:
+                video_upload_workflow.color_edit_video(input_video, output_video)
             
             # Step 2: Transcribe the video
             output_srt = Path("output.srt")

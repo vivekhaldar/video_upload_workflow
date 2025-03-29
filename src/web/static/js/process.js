@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const stepColorEdit = document.querySelector('#step-color-edit');
     const stepTranscription = document.querySelector('#step-transcription');
     const stepChapters = document.querySelector('#step-chapters');
+    const skipColorEdit = document.querySelector('#skip_color_edit');
     
     // Get session ID from URL if available
     const urlParams = new URLSearchParams(window.location.search);
@@ -19,6 +20,25 @@ document.addEventListener('DOMContentLoaded', function() {
             // Already handled by the backend, we just need to show the status UI
             processingInfo.classList.add('d-none');
             processingStatus.classList.remove('d-none');
+            
+            // If skipping color edit, update the UI immediately to show it as skipped
+            if (skipColorEdit && skipColorEdit.checked) {
+                stepColorEdit.classList.add('skipped');
+                stepColorEdit.classList.remove('active');
+                stepColorEdit.querySelector('.status-icon').textContent = '⏭️';
+                // Show a text indicating it was skipped
+                const skipText = document.createElement('span');
+                skipText.className = 'text-muted ms-2';
+                skipText.textContent = '(Skipped)';
+                stepColorEdit.appendChild(skipText);
+                
+                // Since color edit is skipped, set transcription as active
+                stepTranscription.classList.add('active');
+                stepTranscription.querySelector('.status-icon').textContent = '🔄';
+                
+                // Update progress bar
+                progressBar.style.width = '33%';
+            }
             
             // Start checking status if we have a session ID
             if (sessionId) {
@@ -58,9 +78,27 @@ document.addEventListener('DOMContentLoaded', function() {
             progressBar.style.width = `${progress}%`;
         }
         
+        // Check if color edit was skipped
+        let colorEditSkipped = false;
+        if (skipColorEdit && skipColorEdit.checked) {
+            colorEditSkipped = true;
+        }
+        
         // Update step indicators
         if (stepColorEdit) {
-            if (status.color_edit) {
+            if (colorEditSkipped) {
+                if (!stepColorEdit.classList.contains('skipped')) {
+                    stepColorEdit.classList.add('skipped');
+                    stepColorEdit.querySelector('.status-icon').textContent = '⏭️';
+                    // Show a text indicating it was skipped if not already added
+                    if (!stepColorEdit.querySelector('.text-muted')) {
+                        const skipText = document.createElement('span');
+                        skipText.className = 'text-muted ms-2';
+                        skipText.textContent = '(Skipped)';
+                        stepColorEdit.appendChild(skipText);
+                    }
+                }
+            } else if (status.color_edit) {
                 stepColorEdit.classList.remove('active');
                 stepColorEdit.classList.add('done');
                 stepColorEdit.querySelector('.status-icon').textContent = '✅';
@@ -75,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 stepTranscription.classList.remove('active');
                 stepTranscription.classList.add('done');
                 stepTranscription.querySelector('.status-icon').textContent = '✅';
-            } else if (status.color_edit) {
+            } else if (status.color_edit || colorEditSkipped) {
                 stepTranscription.classList.add('active');
                 stepTranscription.querySelector('.status-icon').textContent = '🔄';
             }

@@ -22,6 +22,11 @@
                     </ol>
                     
                     <form action="{{ url_for('process_video') }}" method="post">
+                        <div class="form-check mb-3 text-start">
+                            <input type="checkbox" class="form-check-input" id="skip_color_edit" name="skip_color_edit">
+                            <label class="form-check-label" for="skip_color_edit">Skip color editing step</label>
+                            <div class="form-text">Select this if you want to use the original video without color editing.</div>
+                        </div>
                         <button type="submit" id="start-processing" class="btn btn-primary btn-lg">
                             Start Processing
                         </button>
