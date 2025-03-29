@@ -192,12 +192,12 @@ def confirm_upload(final_title, description_file, skip_confirmation):
         print("Upload cancelled.")
         sys.exit(0)
 
-def upload_video(final_title):
+def upload_video(final_title, video_path):
     """Upload the video using the provided title and associated files."""
     print("=== Step 8: Uploading video to YouTube ===")
     cmd = [
         "yt_upload",
-        "--video", "output.mp4",
+        "--video", str(video_path),
         "--transcript", "output.srt",
         "--description", "description.txt",
         "--thumbnail", "thumbnail.png",
@@ -212,16 +212,24 @@ def main():
     )
     parser.add_argument("input_video", help="Path to the input video file (e.g., input_video.mp4)")
     parser.add_argument("--yes", "-y", action="store_true", help="Skip confirmation before upload")
+    parser.add_argument("--skip-color-edit", action="store_true", help="Skip the color editing step")
     args = parser.parse_args()
 
     check_required_commands()
 
     input_video = args.input_video
     skip_confirmation = args.yes
+    skip_color_edit = args.skip_color_edit
 
     # Step 1: Color edit the video.
     output_video = Path("output.mp4")
-    color_edit_video(input_video, output_video)
+    if skip_color_edit:
+        print("=== Step 1: Color-edit the video ===")
+        print(f"Color editing step skipped. Using input video for subsequent steps.")
+        output_video = Path(input_video)
+        print()
+    else:
+        color_edit_video(input_video, output_video)
 
     # Step 2: Transcribe the video.
     output_srt = Path("output.srt")
@@ -252,7 +260,7 @@ def main():
     confirm_upload(final_title, description_file, skip_confirmation)
 
     # Step 8: Upload the video.
-    upload_video(final_title)
+    upload_video(final_title, output_video)
 
 if __name__ == "__main__":
     main()
