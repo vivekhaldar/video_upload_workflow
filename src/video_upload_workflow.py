@@ -74,6 +74,15 @@ def transcribe_video(input_video: Path, output_srt: Path):
             str(input_video)
         ]
         run_command(cmd, "Transcribing video...")
+
+        # whisper puts the output in a file named <input_video>.srt.
+        # Move it to the desired output path
+        srt_file = input_video.with_suffix(".srt")
+        if srt_file.exists():
+            srt_file.rename(output_srt)
+        else:
+            print(f"Error: Transcription output {srt_file} not found.", file=sys.stderr)
+            sys.exit(1)
         print(f"Transcription complete: {output_srt} is available.")
     print()
 
