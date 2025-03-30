@@ -213,8 +213,17 @@ def confirm_upload():
             # Get the final title
             final_title = (session_folder / 'final_title.txt').read_text()
             
+            # Check if color edit was skipped
+            color_edit_skipped = (session_folder / 'color_edit_skipped.txt').exists()
+            
+            # Use the appropriate video path based on whether color edit was skipped
+            if color_edit_skipped:
+                video_path = str(session_folder / 'input_video.mp4')
+            else:
+                video_path = str(session_folder / 'output.mp4')
+                
             # Upload the video
-            video_upload_workflow.upload_video(final_title)
+            video_upload_workflow.upload_video(final_title, video_path)
             
             flash('Video successfully uploaded to YouTube!')
         except Exception as e:
