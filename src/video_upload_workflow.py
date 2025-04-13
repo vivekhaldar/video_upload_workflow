@@ -45,7 +45,7 @@ def run_command(command, description=""):
         print(f"Error while running: {' '.join(command)}", file=sys.stderr)
         sys.exit(err.returncode)
 
-def color_edit_video(input_video: str, output_video: Path):
+def color_edit_video(input_video: str, output_video: Path, volume_threshold="0.002"):
     """Perform color editing on the video if output file does not already exist."""
     print("=== Step 1: Color-edit the video ===")
     if output_video.exists():
@@ -55,7 +55,7 @@ def color_edit_video(input_video: str, output_video: Path):
             "color_edit",
             "--input", input_video,
             "--output", str(output_video),
-            "--volume_threshold", "0.002"
+            "--volume_threshold", volume_threshold
         ]
         run_command(cmd, "Running color edit...")
         print(f"Color editing complete: {output_video} is available.")
@@ -222,6 +222,7 @@ def main():
     parser.add_argument("input_video", help="Path to the input video file (e.g., input_video.mp4)")
     parser.add_argument("--yes", "-y", action="store_true", help="Skip confirmation before upload")
     parser.add_argument("--skip-color-edit", action="store_true", help="Skip the color editing step")
+    parser.add_argument("--volume-threshold", default="0.002", help="Volume threshold for color editing")
     args = parser.parse_args()
 
     check_required_commands()
@@ -229,6 +230,7 @@ def main():
     input_video = args.input_video
     skip_confirmation = args.yes
     skip_color_edit = args.skip_color_edit
+    volume_threshold = args.volume_threshold
 
     # Step 1: Color edit the video.
     output_video = Path("output.mp4")
@@ -238,7 +240,7 @@ def main():
         output_video = Path(input_video)
         print()
     else:
-        color_edit_video(input_video, output_video)
+        color_edit_video(input_video, output_video, volume_threshold)
 
     # Step 2: Transcribe the video.
     output_srt = Path("output.srt")
