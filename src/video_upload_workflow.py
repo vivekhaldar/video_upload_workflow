@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """
 This script processes a video through several steps:
-  1. Color edits the video.
-  2. Transcribes the video.
-  3. Generates chapters and suggested titles.
-  4. Extracts chapters and suggested titles.
-  5. Lets the user choose and optionally edit a title.
-  6. Creates a description file and allows editing.
-  7. Asks for confirmation (unless --yes is provided).
-  8. Uploads the video to YouTube.
+  1. Clean up the audio using ffmpeg.
+  2. Color edits the video.
+  3. Transcribes the video.
+  4. Generates chapters and suggested titles.
+  5. Extracts chapters and suggested titles.
+  6. Lets the user choose and optionally edit a title.
+  7. Creates a description file and allows editing.
+  8. Asks for confirmation (unless --yes is provided).
+  9. Uploads the video to YouTube.
 
-It requires the commands: uvx. Make sure these are installed.
+It requires the commands: ffmpeg, uvx. Make sure these are installed.
 """
 
 import argparse
@@ -23,7 +24,7 @@ from pathlib import Path
 
 def check_required_commands():
     """Check that all required external commands are available."""
-    required_cmds = ["uvx"]
+    required_cmds = ["uvx", "ffmpeg"]
     for cmd in required_cmds:
         if shutil.which(cmd) is None:
             print(f"Error: {cmd} is not installed. Please install it and try again.", file=sys.stderr)
@@ -45,15 +46,50 @@ def run_command(command, description=""):
         print(f"Error while running: {' '.join(command)}", file=sys.stderr)
         sys.exit(err.returncode)
 
-def color_edit_video(input_video: str, output_video: Path, volume_threshold="0.002"):
+def clean_audio(input_video: Path, output_video: Path):
+    """
+    Clean up the audio of the input video using ffmpeg.
+    
+    This applies several audio filters to improve sound quality:
+    - agate: Noise gate to reduce background noise
+    - acompressor: Compresses dynamic range to even out audio levels
+    - bass: Boosts low frequencies for richer sound
+    - treble: Reduces high frequencies to minimize harshness
+    - alimiter: Prevents audio clipping
+    - volume: Final volume adjustment
+    
+    The video stream is copied without re-encoding (to preserve quality),
+    while the audio is re-encoded to AAC format at 192kbps.
+    """
+    print("=== Step 1: Clean up audio ===")
+    if output_video.exists():
+        print(f"{output_video} already exists, skipping audio cleanup step.")
+    else:
+        cmd = [
+            "ffmpeg", "-i", str(input_video),
+            "-af", "agate=threshold=-35dB:attack=25:release=150:range=0.01,"
+                  "acompressor=threshold=-35.5dB:ratio=4:attack=3:release=201:makeup=20dB,"
+                  "bass=g=5:f=150,"
+                  "treble=g=-5:f=4000,"
+                  "alimiter=limit=-5dB:release=60,"
+                  "volume=2.70dB",
+            "-c:v", "copy",
+            "-c:a", "aac", "-b:a", "192k",
+            str(output_video)
+        ]
+        run_command(cmd, "Cleaning up audio with ffmpeg...")
+        print(f"Audio cleanup complete: {output_video} is available.")
+    print()
+
+def color_edit_video(input_video: Path, output_video: Path, volume_threshold="0.002"):
     """Perform color editing on the video if output file does not already exist."""
-    print("=== Step 1: Color-edit the video ===")
+    print("=== Step 2: Color-edit the video ===")
     if output_video.exists():
         print(f"{output_video} already exists, skipping color-edit step.")
     else:
         cmd = [
             "color_edit",
-            "--input", input_video,
+            "--input", str(input_video),
             "--output", str(output_video),
             "--volume_threshold", volume_threshold
         ]
@@ -63,7 +99,7 @@ def color_edit_video(input_video: str, output_video: Path, volume_threshold="0.0
 
 def transcribe_video(input_video: Path, output_srt: Path):
     """Transcribe the video if transcription file does not already exist."""
-    print("=== Step 2: Transcribe the video ===")
+    print("=== Step 3: Transcribe the video ===")
     if output_srt.exists():
         print(f"{output_srt} already exists, skipping transcription step.")
     else:
@@ -88,7 +124,7 @@ def transcribe_video(input_video: Path, output_srt: Path):
 
 def generate_chapters(input_srt: Path, output_json: Path):
     """Generate chapters and suggested titles from the transcript."""
-    print("=== Step 3: Generate chapters and suggested titles ===")
+    print("=== Step 4: Generate chapters and suggested titles ===")
     if output_json.exists():
         print(f"{output_json} already exists, skipping chapters generation step.")
     else:
@@ -217,7 +253,7 @@ def upload_video(final_title, video_path):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Process a video: color-edit, transcribe, generate chapters/titles, and upload to YouTube."
+        description="Process a video: clean audio, color-edit, transcribe, generate chapters/titles, and upload to YouTube."
     )
     parser.add_argument("input_video", help="Path to the input video file (e.g., input_video.mp4)")
     parser.add_argument("--yes", "-y", action="store_true", help="Skip confirmation before upload")
@@ -227,32 +263,36 @@ def main():
 
     check_required_commands()
 
-    input_video = args.input_video
+    input_video = Path(args.input_video)
     skip_confirmation = args.yes
     skip_color_edit = args.skip_color_edit
     volume_threshold = args.volume_threshold
 
-    # Step 1: Color edit the video.
+    # Step 1: Clean up the audio.
+    cleaned_audio_video = Path("cleaned_audio.mp4")
+    clean_audio(input_video, cleaned_audio_video)
+
+    # Step 2: Color edit the video.
     output_video = Path("output.mp4")
     if skip_color_edit:
-        print("=== Step 1: Color-edit the video ===")
-        print(f"Color editing step skipped. Using input video for subsequent steps.")
-        output_video = Path(input_video)
+        print("=== Step 2: Color-edit the video ===")
+        print("Color editing step skipped. Using cleaned audio video for subsequent steps.")
+        output_video = cleaned_audio_video
         print()
     else:
-        color_edit_video(input_video, output_video, volume_threshold)
+        color_edit_video(cleaned_audio_video, output_video, volume_threshold)
 
-    # Step 2: Transcribe the video.
+    # Step 3: Transcribe the video.
     output_srt = Path("output.srt")
     transcribe_video(output_video, output_srt)
 
-    # Step 3: Generate chapters and suggested titles.
+    # Step 4: Generate chapters and suggested titles.
     chapters_json = Path("chapters_and_suggested_titles.json")
     generate_chapters(output_srt, chapters_json)
 
-    # Step 4: Extract chapter markers and suggested titles.
+    # Step 5: Extract chapter markers and suggested titles.
     chapters, titles = extract_chapters_and_titles(chapters_json)
-    print("=== Step 4: Extract chapter markers and suggested titles ===")
+    print("=== Step 5: Extract chapter markers and suggested titles ===")
     print("Chapters:")
     print(chapters)
     print()
@@ -261,16 +301,16 @@ def main():
         print(t)
     print()
 
-    # Step 5: Choose and edit a title.
+    # Step 6: Choose and edit a title.
     final_title = select_and_edit_title(titles)
 
-    # Step 6: Create and edit the description.
+    # Step 7: Create and edit the description.
     description_file = edit_description(chapters)
 
-    # Step 7: Confirmation before upload.
+    # Step 8: Confirmation before upload.
     confirm_upload(final_title, description_file, skip_confirmation)
 
-    # Step 8: Upload the video.
+    # Step 9: Upload the video.
     upload_video(final_title, output_video)
 
 if __name__ == "__main__":
