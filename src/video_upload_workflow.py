@@ -259,6 +259,7 @@ def main():
     parser.add_argument("--yes", "-y", action="store_true", help="Skip confirmation before upload")
     parser.add_argument("--skip-color-edit", action="store_true", help="Skip the color editing step")
     parser.add_argument("--volume-threshold", default="0.002", help="Volume threshold for color editing")
+    parser.add_argument("--clean-audio", action="store_true", help="Perform the audio cleanup step (default: False)")
     args = parser.parse_args()
 
     check_required_commands()
@@ -270,7 +271,13 @@ def main():
 
     # Step 1: Clean up the audio.
     cleaned_audio_video = Path("cleaned_audio.mp4")
-    clean_audio(input_video, cleaned_audio_video)
+    if args.clean_audio:
+        clean_audio(input_video, cleaned_audio_video)
+    else:
+        print("=== Step 1: Clean up audio ===")
+        print("Audio cleanup step skipped. Using input video for subsequent steps.")
+        cleaned_audio_video = input_video
+        print()
 
     # Step 2: Color edit the video.
     output_video = Path("output.mp4")
